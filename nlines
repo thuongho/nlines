@@ -1,0 +1,23 @@
+#!/bin/bash
+#
+# this simple program takes two file arguments 
+# It then outputs the number of lines in each file, and
+# compares # the number of lines in the two files as a percentage.
+#
+# No check is made of either files' path. It is assumed that
+# if two arguments are found, they contain paths to readable files.
+#
+FILE1=$1
+FILE2=$2
+# insert code here to abort if either FILE1 or FILE2 is empty.
+: ${FILE2:?"requires two file arguments"}
+#
+# then insert code here to do the real work.
+NLINE1=$(cat $FILE1 | wc -l)
+NLINE2=$(cat $FILE2 | wc -l)
+PERCENT=$(( ($NLINE1 * 100) / $NLINE2))
+
+
+echo $FILE1 has $NLINE1 lines
+echo $FILE2 has $NLINE2 lines
+echo $FILE1 has $PERCENT'%' as many lines as $NLINE2
