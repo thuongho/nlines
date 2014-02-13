@@ -1,0 +1,57 @@
+#!/bin/bash
+#
+# This is a simple program that will output some information about the user
+#
+# Variables are placed here
+user_name=$(sed -n "/$LOGNAME/p" /etc/passwd | sed 's/.*:\([[:alpha:]]\+\),.*/\1/')
+# If user name is empty
+: ${user_name:-LOGNAME}
+#
+log=$(uname -n)
+last_log=$(last -2 $LOGNAME | sed 's/^.*\.[[:digit:]]\+ *//' | grep 'logged' | head -n1)
+set_var=$(set | grep -c '^[[:alpha:]_][[:alnum:]_]*=')
+env_var=$(env | grep -c '^[[:alpha:]_][[:alnum:]_]*=')
+one_min=$(uptime | sed -e 's/^.*: //' -e 's/, .*$//')
+up_time=$(uptime | sed 's/, [[:digit:]]\+ users.*$//')
+mp=$(df $PWD | sed 's/^.*% //'| tail -n1)
+used=$(df $PWD | sed 's/^.* \([[:digit:]]\+\)%.*$/\1/' |tail -n1)
+free=$(df $PWD | grep '[[:digit:]]\+%' | tr -s ' ' ':' | cut -d: -f4)
+
+
+
+# Output begins here...
+# A welcome message indicating your name  
+echo Hello $user_name
+#
+# The host you are logged on
+echo You are logged into $log
+#
+# Date and time of last log on
+echo You last logged on at:
+echo $last_log
+#
+# Number of local and environment variables
+echo "You have $(( set_var - env_var )) local and $env_var environment variables defined"
+#
+# The Directories in your search path
+echo 'The directories in your search path are:'
+echo $PATH | tr ':' '\n'
+#
+# Current 1-min load average
+echo "Currently, the system load average for one minute is $one_min"
+#
+# Uptime for the system
+echo "The system has been up $up_time"
+#
+# Mount point
+echo "The filesystem you are currently on $mp"
+#
+# % Free space
+echo "The percent of free space is $(( 100 - used ))%"
+#
+# MB of free space
+echo "There are currently $(( free / 1024 )) MB of free space on $mp"
+
+
+
+
